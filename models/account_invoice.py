@@ -18,7 +18,7 @@ class DiscBase(models.Model):
                     base += sum((line.invoice_line_tax_ids.filtered(lambda t: t.include_base_amount) - tax.tax_id).mapped('amount'))
             tax.base = base
             if tax.invoice_id.global_discount_type in ['percent']:
-                tax.base = (base * (1 - ((tax.invoice_id.global_discount / 100.0) or 0.0)))
+                tax.base = round(base * (1 - ((tax.invoice_id.global_discount / 100.0) or 0.0)))
             else:
                 tax.base -= tax.invoice_id.global_discount
 
@@ -71,6 +71,7 @@ class GlobalDiscount(models.Model):
                         tax_grouped[key]['amount'] += val['amount']
         else:
             tax_grouped = super(GlobalDiscount,self).get_taxes_values()
+        _logger.info(tax_grouped)
         return tax_grouped
 
     @api.onchange('global_discount','global_discount_type')
@@ -84,7 +85,8 @@ class GlobalDiscount(models.Model):
                     tax_lines += tax_lines.new(tax)
                 inv.tax_line_ids = tax_lines
                 discount = inv.global_discount
-                amount_untaxed = sum(line.price_subtotal for line in inv.invoice_line_ids)
+                amount_untaxed = round(sum(line.price_subtotal for line in inv.invoice_line_ids))
+                _logger.info(amount_untaxed)
                 afecto = 0
                 for line in inv.invoice_line_ids:
                     for t in line.invoice_line_tax_ids:
@@ -95,7 +97,7 @@ class GlobalDiscount(models.Model):
                     discount = ((inv.global_discount * 100) / afecto )
                 inv.amount_untaxed = amount_untaxed
                 inv.amount_untaxed_global_discount = (afecto * (discount / 100))
-                amount_untaxed -= inv.amount_untaxed_global_discount
+                amount_untaxed -= round(inv.amount_untaxed_global_discount)
                 amount_tax = sum(line.amount for line in inv.tax_line_ids)
                 inv.amount_tax = amount_tax
                 amount_total = amount_untaxed + amount_tax
