@@ -18,7 +18,7 @@ Make available a global discount.
         'sale',
         ],
     'data': [
-        'security/ir.model.access.csv',
+        #'security/ir.model.access.csv',
         'views/account_invoice.xml',
     ],
     'installable': True,
