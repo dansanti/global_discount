@@ -8,19 +8,15 @@ class DiscBase(models.Model):
     _inherit = 'account.invoice.tax'
 
     def _compute_base_amount(self):
-        
-        _logger.info("entro compute_base")
         super(DiscBase,self)._compute_base_amount()
         for tax in self:
             base = 0.0
             for line in tax.invoice_id.invoice_line_ids:
-                _logger.info(tax.base)
                 if tax.invoice_id.global_discount_type in ['percent']:
                     tax.base = round(tax.base * (1 - ((tax.invoice_id.global_discount / 100.0) or 0.0)))
                 else:
-                    tax.base -= tax.invoice_id.global_discount 
-                    _logger.info(tax.base)
-            
+                    tax.base -= tax.invoice_id.global_discount
+
 
 class GlobalDiscount(models.Model):
     _inherit = "account.invoice"
@@ -35,7 +31,6 @@ class GlobalDiscount(models.Model):
     def get_taxes_values(self):
         tax_grouped = super(GlobalDiscount,self).get_taxes_values()
         if self.global_discount > 0:
-            _logger.info("entro compute_tax")
             discount = self.global_discount
             if self.global_discount_type in ['amount']:
                 afecto = 0
@@ -45,22 +40,18 @@ class GlobalDiscount(models.Model):
                             afecto += line.price_subtotal
                 discount = ((self.global_discount * 100) / afecto )
             taxes = tax_grouped
-            _logger.info(tax_grouped)
             tax_grouped = {}
             for id, t in taxes.iteritems():
-                _logger.info(t)
                 tax = self.env['account.tax'].browse(t['tax_id'])
                 if tax.amount > 0:
-                    t['amount'] = (t['amount'] * (1 - ((discount / 100.0) or 0.0)))                
+                    t['amount'] = (t['amount'] * (1 - ((discount / 100.0) or 0.0)))
                     tax_grouped[id] = t
-        _logger.info(tax_grouped)
         return tax_grouped
 
     @api.onchange('global_discount','global_discount_type')
     def _compute_amount(self):
         for inv in self:
             if inv.global_discount > 0  and inv.global_discount_type:
-                _logger.info("entro compute_amount")
                 taxes_grouped = inv.get_taxes_values()
                 tax_lines = inv.tax_line_ids.browse([])
                 for tax in taxes_grouped.values():
@@ -68,7 +59,6 @@ class GlobalDiscount(models.Model):
                 inv.tax_line_ids = tax_lines
                 discount = inv.global_discount
                 amount_untaxed = round(sum(line.price_subtotal for line in inv.invoice_line_ids))
-                _logger.info(amount_untaxed)
                 afecto = 0
                 for line in inv.invoice_line_ids:
                     for t in line.invoice_line_tax_ids:
@@ -96,7 +86,6 @@ class GlobalDiscount(models.Model):
                 super(GlobalDiscount,inv)._compute_amount()
 
     def finalize_invoice_move_lines(self, move_lines):
-        _logger.info(move_lines)
         if not self.global_discount > 0:
             return move_lines
         new_lines = []
