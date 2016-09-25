@@ -38,7 +38,8 @@ class GlobalDiscount(models.Model):
                     for tl in line.invoice_line_tax_ids:
                         if tl.amount > 0:
                             afecto += line.price_subtotal
-                discount = ((self.global_discount * 100) / afecto )
+                if afecto > 0:
+                    discount = ((self.global_discount * 100) / afecto )
             taxes = tax_grouped
             tax_grouped = {}
             for id, t in taxes.iteritems():
@@ -59,7 +60,7 @@ class GlobalDiscount(models.Model):
                 inv.tax_line_ids = tax_lines
                 discount = inv.global_discount
                 amount_untaxed = round(sum(line.price_subtotal for line in inv.invoice_line_ids))
-                discount = afecto = 0
+                afecto = 0
                 for line in inv.invoice_line_ids:
                     for t in line.invoice_line_tax_ids:
                         if t.amount > 0:
@@ -67,7 +68,7 @@ class GlobalDiscount(models.Model):
                 if inv.global_discount_type in ['amount'] and afecto > 0:
                     discount = ((inv.global_discount * 100) / afecto )
                 inv.amount_untaxed = amount_untaxed
-                if afecto > 0and discount > 0:
+                if afecto > 0 and discount > 0:
                     inv.amount_untaxed_global_discount = (afecto * (discount / 100))
                 amount_untaxed -= round(inv.amount_untaxed_global_discount)
                 amount_tax = sum(line.amount for line in inv.tax_line_ids)
