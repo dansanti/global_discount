@@ -33,7 +33,7 @@ class GlobalDiscount(models.Model):
         if self.global_discount > 0:
             discount = self.global_discount
             if self.global_discount_type in ['amount']:
-                afecto = 0
+                discount =afecto = 0
                 for line in self.invoice_line_ids:
                     for tl in line.invoice_line_tax_ids:
                         if tl.amount > 0:
@@ -43,9 +43,9 @@ class GlobalDiscount(models.Model):
             tax_grouped = {}
             for id, t in taxes.iteritems():
                 tax = self.env['account.tax'].browse(t['tax_id'])
-                if tax.amount > 0:
+                if tax.amount > 0 and discount > 0:
                     t['amount'] = (t['amount'] * (1 - ((discount / 100.0) or 0.0)))
-                    tax_grouped[id] = t
+                tax_grouped[id] = t
         return tax_grouped
 
     @api.onchange('global_discount','global_discount_type')
@@ -59,15 +59,16 @@ class GlobalDiscount(models.Model):
                 inv.tax_line_ids = tax_lines
                 discount = inv.global_discount
                 amount_untaxed = round(sum(line.price_subtotal for line in inv.invoice_line_ids))
-                afecto = 0
+                discount = afecto = 0
                 for line in inv.invoice_line_ids:
                     for t in line.invoice_line_tax_ids:
                         if t.amount > 0:
                             afecto += line.price_subtotal
-                if inv.global_discount_type in ['amount']:
+                if inv.global_discount_type in ['amount'] and afecto > 0:
                     discount = ((inv.global_discount * 100) / afecto )
                 inv.amount_untaxed = amount_untaxed
-                inv.amount_untaxed_global_discount = (afecto * (discount / 100))
+                if afecto > 0and discount > 0:
+                    inv.amount_untaxed_global_discount = (afecto * (discount / 100))
                 amount_untaxed -= round(inv.amount_untaxed_global_discount)
                 amount_tax = sum(line.amount for line in inv.tax_line_ids)
                 inv.amount_tax = amount_tax
