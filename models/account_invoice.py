@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from openerp import fields, models, api, _
 from openerp.exceptions import UserError
+import collections
 import logging
 _logger = logging.getLogger(__name__)
 
@@ -149,11 +150,11 @@ class GlobalDiscount(models.Model):
             dr_line['ValorDR'] = round(self.global_discount,2)
             if self.sii_document_class_id.sii_code in [34] and (self.referencias and self.referencias[0].sii_referencia_TpoDocRef.sii_code == '34'):#solamente si es exento
                 dr_line['IndExeDR'] = 1
-            dr_lines.extend([{'DscRcgGlobal':dr_line}])
-            for key, valuel in dte.iteritems():
-                resul[key] = value
+            dr_lines= [{'DscRcgGlobal':dr_line}]
+            for key, value in dte.iteritems():
+                result[key] = value
                 if key == 'item':
-                    resul['drlines'] = dr_lines
+                    result['drlines'] = dr_lines
         return result
 
     def _dte_to_xml(self, dte):
