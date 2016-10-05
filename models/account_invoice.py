@@ -134,27 +134,29 @@ class GlobalDiscount(models.Model):
         return new_lines
 
     def _dte(self, n_atencion=None):
-        result = dte = super(GlobalDiscount,self)._dte(n_atencion)
-        if self.global_discount > 0:
-            lin_dr = 1
-            dr_line = {}
-            dr_line = collections.OrderedDict()
-            dr_line['NroLinDR'] = lin_dr
-            dr_line['TpoMov'] = 'D'
-            if self.global_discount_detail:
-                dr_line['GlosaDR'] = self.global_discount_detail
-            disc_type = "%"
-            if self.global_discount_type == "amount":
-                disc_type = "$"
-            dr_line['TpoValor'] = disc_type
-            dr_line['ValorDR'] = round(self.global_discount,2)
-            if self.sii_document_class_id.sii_code in [34] and (self.referencias and self.referencias[0].sii_referencia_TpoDocRef.sii_code == '34'):#solamente si es exento
-                dr_line['IndExeDR'] = 1
-            dr_lines= [{'DscRcgGlobal':dr_line}]
-            for key, value in dte.iteritems():
-                result[key] = value
-                if key == 'item':
-                    result['drlines'] = dr_lines
+        dte = super(GlobalDiscount,self)._dte(n_atencion)
+        if not self.global_discount > 0:
+            return dte
+        result = collections.OrderedDict()
+        lin_dr = 1
+        dr_line = {}
+        dr_line = collections.OrderedDict()
+        dr_line['NroLinDR'] = lin_dr
+        dr_line['TpoMov'] = 'D'
+        if self.global_discount_detail:
+            dr_line['GlosaDR'] = self.global_discount_detail
+        disc_type = "%"
+        if self.global_discount_type == "amount":
+            disc_type = "$"
+        dr_line['TpoValor'] = disc_type
+        dr_line['ValorDR'] = round(self.global_discount,2)
+        if self.sii_document_class_id.sii_code in [34] and (self.referencias and self.referencias[0].sii_referencia_TpoDocRef.sii_code == '34'):#solamente si es exento
+            dr_line['IndExeDR'] = 1
+        dr_lines= [{'DscRcgGlobal':dr_line}]
+        for key, value in dte.iteritems():
+            if key == 'reflines':
+                result['drlines'] = dr_lines
+            result[key] = value
         return result
 
     def _dte_to_xml(self, dte):
