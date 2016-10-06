@@ -12,11 +12,10 @@ class DiscBase(models.Model):
         super(DiscBase,self)._compute_base_amount()
         for tax in self:
             base = 0.0
-            for line in tax.invoice_id.invoice_line_ids:
-                if tax.invoice_id.global_discount_type in ['percent']:
-                    tax.base = round(tax.base * (1 - ((tax.invoice_id.global_discount / 100.0) or 0.0)))
-                else:
-                    tax.base -= tax.invoice_id.global_discount
+            if tax.invoice_id.global_discount_type in ['percent']:
+                tax.base = round(tax.base * (1 - ((tax.invoice_id.global_discount / 100.0) or 0.0)))
+            else:
+                tax.base -= tax.invoice_id.global_discount
 
 
 class GlobalDiscount(models.Model):
