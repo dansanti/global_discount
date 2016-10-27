@@ -11,7 +11,7 @@
               <field name="global_discount_detail" attrs="{'required':[('global_discount','>',0)], 'invisible':[('global_discount','==',0)]}" />
             </field>
             <field name="amount_untaxed" position="after">
-              <field name="amount_untaxed_global_discount" widget="monetary" readonly="True" attrs="{'invisible':[('amount_untaxed_global_discount','=',0)]}"/>
+              <field name="amount_untaxed_global_discount" widget="monetary" attrs="{'invisible':[('amount_untaxed_global_discount','=',0)]}"/>
             </field>
           </field>
       </record>

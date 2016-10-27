@@ -25,7 +25,7 @@ class GlobalDiscount(models.Model):
     global_discount = fields.Float(string="Descuento Global", default=0.00, readonly=True, states={'draft': [('readonly', False)]})
     global_discount_type = fields.Selection([('amount','Monto'),('percent','Porcentaje')], string="Tipo de descuento", readonly=True, states={'draft': [('readonly', False)]})
     global_discount_detail = fields.Char(string="Razón del descuento", readonly=True, states={'draft': [('readonly', False)]})
-    amount_untaxed_global_discount = fields.Float(string="Global Discount Amount", default=0.00, readonly=True, states={'draft': [('readonly', False)]})
+    amount_untaxed_global_discount = fields.Float(string="Global Discount Amount", store=True, default=0.00, compute='_compute_amount')
 
     @api.multi
     def get_taxes_values(self):

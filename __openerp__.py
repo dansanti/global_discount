@@ -2,7 +2,7 @@
 {
     "name": """Global Discount\
     """,
-    'version': '9.0.0.2.0',
+    'version': '9.0.0.3.0',
     'category': 'Accoun/invoice',
     'sequence': 12,
     'author':  'Daniel Santibáñez Polanco',
@@ -22,6 +22,7 @@ Make available a global discount.
     'data': [
         #'security/ir.model.access.csv',
         'views/account_invoice.xml',
+        'views/layout.xml',
     ],
     'installable': True,
     'auto_install': False,
