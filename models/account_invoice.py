@@ -89,7 +89,7 @@ class GlobalDiscount(models.Model):
 
     def finalize_invoice_move_lines(self, move_lines):
         if not self.global_discount > 0:
-            return move_lines
+            return super(GlobalDiscount,self).finalize_invoice_move_lines( move_lines)
         new_lines = []
         discount = self.global_discount
         if self.global_discount_type == 'amount':
@@ -130,6 +130,8 @@ class GlobalDiscount(models.Model):
         else:
             hold[2]['credit'] = total
         new_lines.extend([hold])
+
+        new_lines = super(GlobalDiscount,self).finalize_invoice_move_lines( new_lines)
         return new_lines
 
     def _dte(self, n_atencion=None):
