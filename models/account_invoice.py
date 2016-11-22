@@ -160,7 +160,7 @@ class GlobalDiscount(models.Model):
             result[key] = value
         return result
 
-    def _dte_to_xml(self, dte):
-        xml = super(GlobalDiscount, self)._dte_to_xml(dte)
+    def _dte_to_xml(self, dte, tpo_dte="Documento"):
+        xml = super(GlobalDiscount, self)._dte_to_xml(dte, tpo_dte)
         xml = xml.replace('<drlines>','').replace('</drlines>','')
         return xml
