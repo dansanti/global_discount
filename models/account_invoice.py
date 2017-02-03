@@ -45,7 +45,7 @@ class GlobalDiscount(models.Model):
             for id, t in taxes.iteritems():
                 tax = self.env['account.tax'].browse(t['tax_id'])
                 if tax.amount > 0 and discount > 0:
-                    t['amount'] = (t['amount'] * (1 - ((discount / 100.0) or 0.0)))
+                    t['amount'] = (round(t['amount']) * (1 - ((discount / 100.0) or 0.0)))
                 tax_grouped[id] = t
         return tax_grouped
 
