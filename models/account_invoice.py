@@ -33,7 +33,8 @@ class GlobalDiscount(models.Model):
         if self.global_discount > 0:
             discount = self.global_discount
             if self.global_discount_type in ['amount']:
-                discount =afecto = 0
+                discount = 0
+                afecto = 0
                 for line in self.invoice_line_ids:
                     for tl in line.invoice_line_tax_ids:
                         if tl.amount > 0:
@@ -45,7 +46,8 @@ class GlobalDiscount(models.Model):
             for id, t in taxes.iteritems():
                 tax = self.env['account.tax'].browse(t['tax_id'])
                 if tax.amount > 0 and discount > 0:
-                    t['amount'] = (round(t['amount']) * (1 - ((discount / 100.0) or 0.0)))
+                    base = round(round(t['base']) * (1 - ((discount / 100.0) or 0.0)))
+                    t['amount'] = tax._compute_amount(base, base, 1)
                 tax_grouped[id] = t
         return tax_grouped
 
