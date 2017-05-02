@@ -74,7 +74,7 @@ class GlobalDiscount(models.Model):
                     inv.amount_untaxed_global_discount = (afecto * (discount / 100))
                 amount_untaxed -= round(inv.amount_untaxed_global_discount)
                 amount_tax = sum(line.amount for line in inv.tax_line_ids)
-                amount_retencion = sum(line.retencion for line in inv.tax_line_ids)
+                amount_retencion = sum(line.amount_retencion for line in inv.tax_line_ids)
                 inv.amount_tax = amount_tax
                 inv.amount_retencion = amount_retencion
                 amount_total = amount_untaxed + amount_tax - amount_retencion
