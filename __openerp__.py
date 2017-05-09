@@ -2,11 +2,11 @@
 {
     "name": """Global Discount\
     """,
-    'version': '9.0.0.4.0',
+    'version': '9.0.0.4.1',
     'category': 'Accoun/invoice',
     'sequence': 12,
     'author':  'Daniel Santibáñez Polanco',
-    'website': 'http://globalresponse.cl',
+    'website': 'https://globalresponse.cl',
     'license': 'AGPL-3',
     'summary': '',
     'description': """
@@ -14,7 +14,6 @@ Make available a global discount.
 ===============================================================
 """,
     'depends': [
-        'account',
         'sale',
         'l10n_cl_invoice',
         'l10n_cl_dte',
