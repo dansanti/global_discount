@@ -5,18 +5,6 @@ import collections
 import logging
 _logger = logging.getLogger(__name__)
 
-class DiscBase(models.Model):
-    _inherit = 'account.invoice.tax'
-
-    def _compute_base_amount(self):
-        super(DiscBase,self)._compute_base_amount()
-        for tax in self:
-            base = 0.0
-            if tax.invoice_id.global_discount_type in ['percent']:
-                tax.base = round(tax.base * (1 - ((tax.invoice_id.global_discount / 100.0) or 0.0)))
-            else:
-                tax.base -= tax.invoice_id.global_discount
-
 
 class GlobalDiscount(models.Model):
     _inherit = "account.invoice"
@@ -47,6 +35,7 @@ class GlobalDiscount(models.Model):
                 tax = self.env['account.tax'].browse(t['tax_id'])
                 if tax.amount > 0 and discount > 0:
                     base = round(round(t['base']) * (1 - ((discount / 100.0) or 0.0)))
+                    t['base'] = base
                     t['amount'] = tax._compute_amount(base, base, 1)
                 tax_grouped[id] = t
         return tax_grouped
@@ -74,10 +63,8 @@ class GlobalDiscount(models.Model):
                     inv.amount_untaxed_global_discount = (afecto * (discount / 100))
                 amount_untaxed -= round(inv.amount_untaxed_global_discount)
                 amount_tax = sum(line.amount for line in inv.tax_line_ids)
-                amount_retencion = sum(line.amount_retencion for line in inv.tax_line_ids)
                 inv.amount_tax = amount_tax
-                inv.amount_retencion = amount_retencion
-                amount_total = amount_untaxed + amount_tax - amount_retencion
+                amount_total = amount_untaxed + amount_tax
                 amount_total_company_signed = amount_total
                 inv.amount_total = amount_total
                 amount_untaxed_signed = amount_untaxed
