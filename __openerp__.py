@@ -2,7 +2,7 @@
 {
     "name": """Global Discount\
     """,
-    'version': '9.0.0.4.2',
+    'version': '9.0.0.5.0',
     'category': 'Account/invoice',
     'sequence': 12,
     'author':  'Daniel Santibáñez Polanco',

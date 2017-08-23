@@ -15,4 +15,20 @@
             </field>
           </field>
       </record>
+
+      <record id="view_supplier_invoice_form" model="ir.ui.view">
+        <field name="name">l10n_cl.invoice.form</field>
+        <field name="model">account.invoice</field>
+        <field name="inherit_id" ref="account.invoice_supplier_form"/>
+        <field name="arch" type="xml">
+          <field name="payment_term_id" position="after">
+            <field name="global_discount" />
+            <field name="global_discount_type" attrs="{'required':[('global_discount','>',0)], 'invisible':[('global_discount','==',0)]}" />
+            <field name="global_discount_detail" attrs="{'required':[('global_discount','>',0)], 'invisible':[('global_discount','==',0)]}" />
+          </field>
+          <field name="amount_untaxed" position="after">
+            <field name="amount_untaxed_global_discount" widget="monetary" attrs="{'invisible':[('amount_untaxed_global_discount','=',0)]}"/>
+          </field>
+        </field>
+      </record>
 </openerp>
