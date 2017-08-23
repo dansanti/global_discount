@@ -2,8 +2,8 @@
 {
     "name": """Global Discount\
     """,
-    'version': '9.0.0.4.1',
-    'category': 'Accoun/invoice',
+    'version': '9.0.0.4.2',
+    'category': 'Account/invoice',
     'sequence': 12,
     'author':  'Daniel Santibáñez Polanco',
     'website': 'https://globalresponse.cl',

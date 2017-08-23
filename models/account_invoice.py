@@ -112,7 +112,7 @@ class GlobalDiscount(models.Model):
                     total += line[2]['debit']
                 else:
                     total += line[2]['credit']
-            if line[2]['name'] != '/':
+            if line[2]['name'] != '/' and line[2]['name'] != self.name:
                 new_lines.extend([line])
             else:
                 hold = line
