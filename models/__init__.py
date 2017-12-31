@@ -1,7 +1,3 @@
 # -*- coding: utf-8 -*-
-##############################################################################
-# For copyright and license notices, see __openerp__.py file in module root
-# directory
-##############################################################################
-#from . import global_discount
+from . import global_descuento_recargo
 from . import account_invoice

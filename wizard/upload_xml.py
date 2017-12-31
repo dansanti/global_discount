@@ -8,15 +8,15 @@ class UploadXMLWizardGD(models.TransientModel):
     _inherit = 'sii.dte.upload_xml.wizard'
 
     def process_dr(self, dr):
-        data = {}
-        if dr['TpoMov'] == 'D':
-            disc_type = "percent"
-            if dr['TpoValor'] == '$':
-                disc_type = "amount"
-            data['global_discount_type'] = disc_type
-            data['global_discount'] = dr['ValorDR']
-            if 'GlosaDR' in dr:
-                data['global_discount_detail'] = dr['GlosaDR']
+        data = {
+                    'type': dr['TpoMov'],
+                }
+        disc_type = "percent"
+        if dr['TpoValor'] == '$':
+            disc_type = "amount"
+        data['gdr_type'] = disc_type
+        data['global_discount'] = dr['ValorDR']
+        data['gdr_dtail'] = dr['GlosaDR']
         return data
 
     def _prepare_invoice(self, dte, company_id, journal_document_class_id):
@@ -24,9 +24,13 @@ class UploadXMLWizardGD(models.TransientModel):
         if 'DscRcgGlobal' in dte:
             disc_type = "%"
             DscRcgGlobal = dte['DscRcgGlobal']
+            drs = [(5,)]
             if 'TpoMov' in DscRcgGlobal:
-                data.update(self.process_dr(dte['DscRcgGlobal']))
+                dsr.append((0,0,self.process_dr(dte['DscRcgGlobal'])))
             else:
                 for dr in DscRcgGlobal:
-                    data.update(self.process_dr(dr))
+                    drs.append((0,0,self.process_dr(dr)))
+        data.update({
+                'global_descuentos_recargos': drs,
+            })
         return data

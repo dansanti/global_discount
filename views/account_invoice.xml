@@ -5,13 +5,14 @@
           <field name="model">account.invoice</field>
           <field name="inherit_id" ref="account.invoice_form"/>
           <field name="arch" type="xml">
-            <field name="payment_term_id" position="after">
-              <field name="global_discount" />
-              <field name="global_discount_type" attrs="{'required':[('global_discount','>',0)], 'invisible':[('global_discount','==',0)]}" />
-              <field name="global_discount_detail" attrs="{'required':[('global_discount','>',0)], 'invisible':[('global_discount','==',0)]}" />
-            </field>
             <field name="amount_untaxed" position="after">
               <field name="amount_untaxed_global_discount" widget="monetary" attrs="{'invisible':[('amount_untaxed_global_discount','=',0)]}"/>
+              <field name="amount_untaxed_global_recargo" widget="monetary" attrs="{'invisible':[('amount_untaxed_global_recargo','=',0)]}"/>
+            </field>
+            <field name="comment" position="after">
+              <group>
+                <field name="global_descuentos_recargos" />
+              </group>
             </field>
           </field>
       </record>
@@ -21,13 +22,14 @@
         <field name="model">account.invoice</field>
         <field name="inherit_id" ref="account.invoice_supplier_form"/>
         <field name="arch" type="xml">
-          <field name="payment_term_id" position="after">
-            <field name="global_discount" />
-            <field name="global_discount_type" attrs="{'required':[('global_discount','>',0)], 'invisible':[('global_discount','==',0)]}" />
-            <field name="global_discount_detail" attrs="{'required':[('global_discount','>',0)], 'invisible':[('global_discount','==',0)]}" />
-          </field>
           <field name="amount_untaxed" position="after">
             <field name="amount_untaxed_global_discount" widget="monetary" attrs="{'invisible':[('amount_untaxed_global_discount','=',0)]}"/>
+            <field name="amount_untaxed_global_recargo" widget="monetary" attrs="{'invisible':[('amount_untaxed_global_recargo','=',0)]}"/>
+          </field>
+          <field name="comment" position="after">
+            <group>
+              <field name="global_descuentos_recargos" />
+            </group>
           </field>
         </field>
       </record>
