@@ -26,11 +26,11 @@ class UploadXMLWizardGD(models.TransientModel):
             DscRcgGlobal = dte['DscRcgGlobal']
             drs = [(5,)]
             if 'TpoMov' in DscRcgGlobal:
-                dsr.append((0,0,self.process_dr(dte['DscRcgGlobal'])))
+                drs.append((0,0,self.process_dr(dte['DscRcgGlobal'])))
             else:
                 for dr in DscRcgGlobal:
                     drs.append((0,0,self.process_dr(dr)))
-        data.update({
-                'global_descuentos_recargos': drs,
-            })
+            data.update({
+                    'global_descuentos_recargos': drs,
+                })
         return data
