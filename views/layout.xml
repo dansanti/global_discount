@@ -4,7 +4,7 @@
       <tr name="subtotal" position="after">
         <t t-if="o.global_descuentos_recargos">
           <tr t-foreach="o.global_descuentos_recargos" t-as="gdr" class="border-black" style="max-height:11px; font-size:12px !important;">
-            <td><strong>Descuento Global</strong></td>
+            <td><strong t-field="gdr.type"></strong></td>
             <td class="text-right">
                 <span t-esc="gdr.valor if gdr.gdr_type=='amount' else gdr.amount_untaxed_global_dr" t-esc-options='{"widget": "monetary", "display_currency": "o.currency_id"}'/>
             </td>
