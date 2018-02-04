@@ -88,6 +88,10 @@ class GlobalDiscount(models.Model):
                 inv.amount_total_signed = inv.amount_total * sign
                 inv.amount_untaxed_signed = amount_untaxed_signed * sign
 
+    @api.onchange('global_descuentos_recargos' )
+    def _onchange_descuentos(self):
+        self._onchange_invoice_line_ids()
+
     @api.multi
     def compute_invoice_totals(self, company_currency, invoice_move_lines):
         total, total_currency, iml = super(GlobalDiscount, self).compute_invoice_totals(company_currency, invoice_move_lines)
