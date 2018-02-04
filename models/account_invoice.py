@@ -30,6 +30,8 @@ class GlobalDiscount(models.Model):
         )
 
     def porcentaje_dr(self):
+        if not self.global_descuentos_recargos:
+            return 1
         taxes = super(GlobalDiscount,self).get_taxes_values()
         afecto = 0.00
         exento = 0.00
@@ -45,7 +47,7 @@ class GlobalDiscount(models.Model):
         agrupados = self.global_descuentos_recargos.get_agrupados()
         monto = agrupados['R'] - agrupados['D']
         if monto == 0:
-            return 0.00
+            return 1
         porcentaje =   (100.0 * monto) / (afecto or exento)
         return 1 + (porcentaje /100.0)
 
