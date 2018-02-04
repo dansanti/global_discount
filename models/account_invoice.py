@@ -94,16 +94,15 @@ class GlobalDiscount(models.Model):
 
     @api.multi
     def compute_invoice_totals(self, company_currency, invoice_move_lines):
-        total, total_currency, iml = super(GlobalDiscount, self).compute_invoice_totals(company_currency, invoice_move_lines)
-        if not self.global_descuentos_recargos:
-            return total, total_currency, iml
-        gdr = self.porcentaje_dr()
-        for line in invoice_move_lines:
-            line['amount_currency'] *= (gdr)
-            line['price'] *= (gdr)
-        total*=gdr
-        total_currency*=gdr
-        return total, total_currency, invoice_move_lines
+        if self.global_descuentos_recargos:
+            gdr = self.porcentaje_dr()
+            for line in invoice_move_lines:
+                if line.get('tax_line_id', False): #Impuestos ya viene con recargo
+                    continue
+                if line.get('amount_currency', False): #@TODO agregar una línea contable en caso de que sea cargado a un concepto y no pedouctos
+                    line['amount_currency'] *= (gdr)
+                line['price'] *= (gdr)
+        return super(GlobalDiscount, self).compute_invoice_totals(company_currency, invoice_move_lines)
 
     def _dte(self, n_atencion=None):
         dte = super(GlobalDiscount,self)._dte(n_atencion)
