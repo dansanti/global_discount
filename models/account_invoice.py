@@ -46,7 +46,7 @@ class GlobalDiscount(models.Model):
         monto = agrupados['R'] - agrupados['D']
         if monto == 0:
             return 0.00
-        porcentaje =   (100.0 * monto) / afecto
+        porcentaje =   (100.0 * monto) / (afecto or exento)
         return 1 + (porcentaje /100.0)
 
     @api.multi
@@ -110,9 +110,9 @@ class GlobalDiscount(models.Model):
             return dte
         result = collections.OrderedDict()
         lin_dr = 1
-        dr_line = {}
-        dr_line = collections.OrderedDict()
+        dr_lines = []
         for dr in self.global_descuentos_recargos:
+            dr_line = collections.OrderedDict()
             dr_line['NroLinDR'] = lin_dr
             dr_line['TpoMov'] = dr.type
             if dr.gdr_dtail:
@@ -121,10 +121,13 @@ class GlobalDiscount(models.Model):
             if dr.gdr_type == "amount":
                 disc_type = "$"
             dr_line['TpoValor'] = disc_type
-            dr_line['ValorDR'] = round(dr.valor,2)
+            dr_line['ValorDR'] = self.currency_id.round( dr.valor )
+            if self.currency_id and self.company_id and self.currency_id != self.company_id.currency_id:
+                currency_id = self.currency_id.with_context(date=self.date_invoice)
+                dr_line['ValorDROtrMnda'] = currency_id.compute(dr.valor, self.company_id.currency_id)
             if self.sii_document_class_id.sii_code in [34] and (self.referencias and self.referencias[0].sii_referencia_TpoDocRef.sii_code == '34'):#solamente si es exento
                 dr_line['IndExeDR'] = 1
-            dr_lines= [{'DscRcgGlobal':dr_line}]
+            dr_lines.append({'DscRcgGlobal':dr_line})
             for key, value in dte.iteritems():
                 if key == 'reflines':
                     result['drlines'] = dr_lines
