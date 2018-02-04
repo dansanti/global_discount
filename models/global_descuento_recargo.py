@@ -70,7 +70,7 @@ class GlobalDescuentoRecargo(models.Model):
                     continue
                 #exento = 0 #@TODO Descuento Global para exentos
                 if afecto > 0:
-                    dr = gdr.invoice_id.round((afecto *  (dr / 100.0) ))
+                    dr = gdr.invoice_id.currency_id.round((afecto *  (dr / 100.0) ))
             if gdr.type == 'D':
                 des += dr
             else:
