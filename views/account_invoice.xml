@@ -11,7 +11,15 @@
             </field>
             <field name="comment" position="after">
               <group>
-                <field name="global_descuentos_recargos" />
+                <field name="global_descuentos_recargos" editable="bottom" widget="one2many">
+                  <tree editable="top/bottom">
+                    <field name="type"/>
+                    <field name="valor"/>
+                    <field name="gdr_type"/>
+                    <field name="gdr_dtail"/>
+                    <field name="aplicacion"/>
+                  </tree>
+                </field>
               </group>
             </field>
           </field>
@@ -28,7 +36,15 @@
           </field>
           <field name="comment" position="after">
             <group>
-              <field name="global_descuentos_recargos" />
+              <field name="global_descuentos_recargos" editable="bottom" widget="one2many">
+                <tree editable="top/bottom">
+                  <field name="type"/>
+                  <field name="valor"/>
+                  <field name="gdr_type"/>
+                  <field name="gdr_dtail"/>
+                  <field name="aplicacion"/>
+                </tree>
+              </field>                  
             </group>
           </field>
         </field>
