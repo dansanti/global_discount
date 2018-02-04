@@ -88,45 +88,18 @@ class GlobalDiscount(models.Model):
                 inv.amount_total_signed = inv.amount_total * sign
                 inv.amount_untaxed_signed = amount_untaxed_signed * sign
 
-    def finalize_invoice_move_lines(self, move_lines):
+    @api.multi
+    def compute_invoice_totals(self, company_currency, invoice_move_lines):
+        total, total_currency, iml = super(GlobalDiscount, self).compute_invoice_totals(company_currency, invoice_move_lines)
         if not self.global_descuentos_recargos:
-            return super(GlobalDiscount, self).finalize_invoice_move_lines( move_lines)
+            return total, total_currency, iml
         gdr = self.porcentaje_dr()
-        new_lines = []
-        hold = False
-        total = 0
-        for line in move_lines:
-            if line[2]['tax_ids'] and not line[2]['tax_line_id']:#iva ya viene con descuento
-                if line[2]['tax_ids']:
-                    for t in line[2]['tax_ids']:
-                        imp = self.env['account.tax'].browse(t[1])
-                        if imp.amount > 0  and line[2]['debit'] > 0:
-                            line[2]['debit'] = int(round((line[2]['debit'] * gdr )))
-                            total += line[2]['debit']
-                        elif imp.amount > 0:
-                            line[2]['credit'] = int(round((line[2]['credit'] * gdr )))
-                            total += line[2]['credit']
-                        elif line[2]['debit'] > 0:
-                            total += line[2]['debit']
-                        else:
-                            total += line[2]['credit']
-            elif line[2]['tax_line_id']:
-                if line[2]['debit'] > 0:
-                    total += line[2]['debit']
-                else:
-                    total += line[2]['credit']
-            if line[2]['name'] != '/' and line[2]['name'] != self.name:
-                new_lines.extend([line])
-            else:
-                hold = line
-        if hold and hold[2]['debit'] > 0:
-            hold[2]['debit'] = total
-        else:
-            hold[2]['credit'] = total
-        new_lines.extend([hold])
-
-        new_lines = super(GlobalDiscount,self).finalize_invoice_move_lines( new_lines)
-        return new_lines
+        for line in invoice_move_lines:
+            line['amount_currency'] *= (gdr)
+            line['price'] *= (gdr)
+        total*=gdr
+        total_currency*=gdr
+        return total, total_currency, invoice_move_lines
 
     def _dte(self, n_atencion=None):
         dte = super(GlobalDiscount,self)._dte(n_atencion)
