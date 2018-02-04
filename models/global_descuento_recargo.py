@@ -38,6 +38,13 @@ class GlobalDescuentoRecargo(models.Model):
             default=0.00,
             compute='_untaxed_gdr',
         )
+    aplicacion = fields.Selection(
+        [
+            ('flete', 'Flete'),
+            ('seguro', 'Seguro'),
+        ],
+        string="Aplicación del Desc/Rec",
+    )
     invoice_id = fields.Many2one(
             'account.invoice',
             string="Factura",
