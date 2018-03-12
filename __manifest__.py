@@ -2,7 +2,7 @@
 {
     "name": """Global Discount\
     """,
-    'version': '9.0.0.8.4',
+    'version': '0.8.4',
     'category': 'Account/invoice',
     'sequence': 12,
     'author':  'Daniel Santibáñez Polanco',
@@ -26,5 +26,5 @@ Descuento y Recargos Globales para facturación Electrónica.
     ],
     'installable': True,
     'auto_install': False,
-    'application': False,
+    'application': True,
 }
